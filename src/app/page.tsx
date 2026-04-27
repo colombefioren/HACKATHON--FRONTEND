@@ -42,7 +42,7 @@ export default function DashboardPage() {
       <Topbar />
 
       <main className="px-4 sm:px-7 py-6 max-w-7xl mx-auto">
-        <h1 className="sr-only">Judgy hackathon dashboard</h1>
+        <h1 className="sr-only">Evalio hackathon dashboard</h1>
 
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mb-5">
@@ -61,7 +61,7 @@ export default function DashboardPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search submissions..."
-              className="w-full text-sm pl-9 pr-3 py-2 rounded-[3px] bg-white outline-none"
+              className="w-full text-sm pl-9 pr-3 py-2 rounded-md bg-white outline-none"
               style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
             />
           </div>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
                 <button
                   key={f.key}
                   onClick={() => setFilter(f.key)}
-                  className="text-xs font-medium px-3.5 py-1.5 rounded-[3px] press-brutal"
+                  className="text-xs font-medium px-3.5 py-1.5 rounded-md press-brutal"
                   style={{
                     background: sel ? "var(--brand-ink)" : "white",
                     color: sel ? "var(--brand-yellow)" : "var(--brand-ink)",
@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="text-sm font-medium px-4 py-2 rounded-[3px] press-brutal sm:ml-auto"
+            className="text-sm font-medium px-4 py-2 rounded-md press-brutal sm:ml-auto"
             style={{
               background: "var(--brand-coral)",
               color: "var(--brand-ink)",
@@ -137,10 +137,10 @@ export default function DashboardPage() {
 
         {error && (
           <div
-            className="p-4 rounded-[4px] text-sm mb-4 bg-card"
+            className="p-4 rounded-lg text-sm mb-4 bg-card"
             style={{ border: "2.5px solid var(--destructive)", boxShadow: "4px 4px 0 var(--destructive)" }}
           >
-            Couldn&apos;t reach the Judgy API: {(error as Error).message}
+            Couldn&apos;t reach the Evalio API: {(error as Error).message}
           </div>
         )}
 
@@ -153,7 +153,7 @@ export default function DashboardPage() {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-[4px] flex flex-col items-center justify-center gap-2.5 min-h-[170px] px-4 py-6"
+            className="rounded-lg flex flex-col items-center justify-center gap-2.5 min-h-[170px] px-4 py-6"
             style={{
               border: "2.5px dashed #999",
               background: "transparent",
@@ -161,7 +161,7 @@ export default function DashboardPage() {
             }}
           >
             <div
-              className="w-9 h-9 rounded-[3px] flex items-center justify-center text-2xl text-neutral-500"
+              className="w-9 h-9 rounded-md flex items-center justify-center text-2xl text-neutral-500"
               style={{ border: "2.5px dashed #999" }}
             >
               +
@@ -208,7 +208,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="bg-card p-4 rounded-[4px]"
+      className="bg-card p-4 rounded-lg"
       style={{
         border: `2.5px solid ${color ?? "var(--brand-ink)"}`,
         boxShadow: `4px 4px 0 ${color ?? "var(--brand-ink)"}`,
@@ -228,7 +228,7 @@ function StatCard({
 function CardSkeleton() {
   return (
     <div
-      className="bg-card rounded-[4px] p-4 h-[170px] animate-pulse"
+      className="bg-card rounded-lg p-4 h-[170px] animate-pulse"
       style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
     >
       <div className="h-4 bg-neutral-200 rounded w-2/3 mb-3" />
