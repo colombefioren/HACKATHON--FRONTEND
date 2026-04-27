@@ -74,8 +74,8 @@
 :root {
   --radius: 0.25rem;
 
-  /* Page bg = vivid yellow #F5C800 */
-  --background: oklch(0.88 0.18 95);
+  /* Page bg = #F4D738 */
+  --background: oklch(0.87 0.17 90);
   --foreground: oklch(0.15 0 0);
 
   --card: oklch(1 0 0);
@@ -85,7 +85,7 @@
   --popover-foreground: oklch(0.15 0 0);
 
   --primary: oklch(0.15 0 0);            /* near-black */
-  --primary-foreground: oklch(0.88 0.18 95);
+  --primary-foreground: oklch(0.87 0.17 90);
 
   --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.15 0 0);
@@ -93,7 +93,7 @@
   --muted: oklch(0.96 0 0);
   --muted-foreground: oklch(0.45 0 0);
 
-  --accent: oklch(0.88 0.18 95);          /* mustard */
+  --accent: oklch(0.87 0.17 90);          /* mustard */
   --accent-foreground: oklch(0.15 0 0);
 
   --destructive: oklch(0.62 0.22 25);
@@ -105,7 +105,7 @@
 
   /* Brand accents — Neo-brutalism palette from design */
   --brand-ink: oklch(0.15 0 0);            /* #111 */
-  --brand-yellow: oklch(0.88 0.18 95);     /* #F5C800 page bg */
+  --brand-yellow: oklch(0.87 0.17 90);     /* #F5C800 page bg */
   --brand-mustard: oklch(0.65 0.16 65);    /* #E3A018 */
   --brand-coral: oklch(0.72 0.18 25);      /* #FF6B6B */
   --brand-mint: oklch(0.73 0.13 155);      /* #7FBC8C */
@@ -116,14 +116,14 @@
   --chart-1: oklch(0.74 0.18 35);
   --chart-2: oklch(0.87 0.16 145);
   --chart-3: oklch(0.82 0.09 230);
-  --chart-4: oklch(0.88 0.18 95);
+  --chart-4: oklch(0.87 0.17 90);
   --chart-5: oklch(0.71 0.16 295);
 
-  --sidebar: oklch(0.88 0.18 95);
+  --sidebar: oklch(0.87 0.17 90);
   --sidebar-foreground: oklch(0.15 0 0);
   --sidebar-primary: oklch(0.15 0 0);
-  --sidebar-primary-foreground: oklch(0.88 0.18 95);
-  --sidebar-accent: oklch(0.88 0.18 95);
+  --sidebar-primary-foreground: oklch(0.87 0.17 90);
+  --sidebar-accent: oklch(0.87 0.17 90);
   --sidebar-accent-foreground: oklch(0.15 0 0);
   --sidebar-border: oklch(0.15 0 0);
   --sidebar-ring: oklch(0.15 0 0);
@@ -142,7 +142,7 @@
   --secondary-foreground: oklch(0.985 0.08 105);
   --muted: oklch(0.25 0 0);
   --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.88 0.18 95);
+  --accent: oklch(0.87 0.17 90);
   --accent-foreground: oklch(0.15 0 0);
   --destructive: oklch(0.7 0.2 25);
   --destructive-foreground: oklch(0.985 0 0);
