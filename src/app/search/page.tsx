@@ -13,8 +13,8 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-background">
       <Topbar />
-      <main className="px-7 py-8 max-w-5xl mx-auto">
-        <h1 className="text-2xl font-medium mb-2">Semantic search</h1>
+      <main className="px-4 sm:px-7 py-8 max-w-5xl mx-auto">
+        <h1 className="text-xl sm:text-2xl font-medium mb-2">Semantic search</h1>
         <p className="text-sm text-muted-foreground mb-6">
           Find projects by concept, tech stack or theme — powered by AI embeddings.
         </p>
@@ -24,19 +24,19 @@ export default function SearchPage() {
             e.preventDefault();
             run(input);
           }}
-          className="flex gap-2 mb-8"
+          className="flex flex-col sm:flex-row gap-2 mb-8"
         >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="e.g. healthcare apps using computer vision"
-            className="flex-1 text-sm px-4 py-3 rounded-[3px] bg-white outline-none"
+            className="flex-1 text-sm px-4 py-3 rounded-md bg-white outline-none"
             style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "4px 4px 0 var(--brand-ink)" }}
           />
           <button
             type="submit"
             disabled={loading}
-            className="text-sm font-medium px-5 py-3 rounded-[3px] press-brutal disabled:opacity-50"
+            className="text-sm font-medium px-5 py-3 rounded-md press-brutal disabled:opacity-50"
             style={{
               background: "var(--brand-coral)",
               color: "var(--brand-ink)",
@@ -50,7 +50,7 @@ export default function SearchPage() {
 
         {error && (
           <div
-            className="p-3 rounded-[4px] text-sm mb-4 bg-card"
+            className="p-3 rounded-lg text-sm mb-4 bg-card"
             style={{ border: "2.5px solid var(--destructive)" }}
           >
             {error}
@@ -59,7 +59,7 @@ export default function SearchPage() {
 
         {!query && (
           <div
-            className="bg-card p-6 rounded-[4px] text-sm text-muted-foreground"
+            className="bg-card p-6 rounded-lg text-sm text-muted-foreground"
             style={{ border: "2.5px dashed var(--brand-ink)" }}
           >
             Try queries like <em>&quot;AI tools for educators&quot;</em>,{" "}

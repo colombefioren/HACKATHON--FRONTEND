@@ -20,8 +20,8 @@ export default function SetupPage() {
   return (
     <div className="min-h-screen bg-background">
       <Topbar />
-      <main className="px-7 py-8 max-w-2xl mx-auto">
-        <h1 className="text-2xl font-medium mb-2">Hackathon setup</h1>
+      <main className="px-4 sm:px-7 py-8 max-w-2xl mx-auto">
+        <h1 className="text-xl sm:text-2xl font-medium mb-2">Hackathon setup</h1>
         <p className="text-sm text-muted-foreground mb-8">
           Define the themes participants can pick from and the tech stack you expect.
         </p>
@@ -31,7 +31,7 @@ export default function SetupPage() {
             e.preventDefault();
             mut.mutate({ technologies, theme, isAllowed });
           }}
-          className="bg-card rounded-[4px] p-6 space-y-5"
+          className="bg-card rounded-lg p-6 space-y-5"
           style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
         >
           <Field label="Technologies (comma-separated)">
@@ -39,7 +39,7 @@ export default function SetupPage() {
               value={technologies}
               onChange={(e) => setTech(e.target.value)}
               rows={2}
-              className="w-full text-sm px-3 py-2 rounded-[3px] outline-none bg-white"
+              className="w-full text-sm px-3 py-2 rounded-md outline-none bg-white"
               style={{ border: "2.5px solid var(--brand-ink)" }}
             />
           </Field>
@@ -49,7 +49,7 @@ export default function SetupPage() {
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
               rows={2}
-              className="w-full text-sm px-3 py-2 rounded-[3px] outline-none bg-white"
+              className="w-full text-sm px-3 py-2 rounded-md outline-none bg-white"
               style={{ border: "2.5px solid var(--brand-ink)" }}
             />
           </Field>
@@ -68,7 +68,7 @@ export default function SetupPage() {
           <button
             type="submit"
             disabled={mut.isPending}
-            className="w-full text-sm font-medium py-2.5 rounded-[3px] press-brutal disabled:opacity-60"
+            className="w-full text-sm font-medium py-2.5 rounded-md press-brutal disabled:opacity-60"
             style={{
               background: "var(--brand-mustard)",
               color: "var(--brand-ink)",

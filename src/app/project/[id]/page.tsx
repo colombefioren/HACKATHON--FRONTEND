@@ -33,7 +33,7 @@ export default function ProjectDetailPage() {
     return (
       <div className="min-h-screen bg-background">
         <Topbar />
-        <div className="p-8 max-w-3xl mx-auto">
+        <div className="p-4 sm:p-8 max-w-3xl mx-auto">
           <PollingLoader label="Loading project…" />
         </div>
       </div>
@@ -44,7 +44,7 @@ export default function ProjectDetailPage() {
     return (
       <div className="min-h-screen bg-background">
         <Topbar />
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
           <p className="text-sm text-destructive">{(error as Error)?.message ?? "Not found"}</p>
         </div>
       </div>
@@ -57,14 +57,14 @@ export default function ProjectDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       <Topbar />
-      <main className="px-7 py-6 max-w-6xl mx-auto">
+      <main className="px-4 sm:px-7 py-6 max-w-6xl mx-auto">
         <Link href="/" className="text-xs text-muted-foreground mb-3 inline-block hover:underline">
           ← Back to dashboard
         </Link>
 
         {/* Header card */}
         <div
-          className="bg-card rounded-[4px] p-5 mb-6"
+          className="bg-card rounded-lg p-5 mb-6"
           style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
         >
           <div className="flex items-start justify-between gap-4 mb-3 flex-wrap">
@@ -90,7 +90,7 @@ export default function ProjectDetailPage() {
               <button
                 onClick={() => reviewMut.mutate({ isReviewed: !project.is_reviewed })}
                 disabled={reviewMut.isPending}
-                className="text-xs font-medium px-3 py-1.5 rounded-[3px] press-brutal disabled:opacity-50"
+                className="text-xs font-medium px-3 py-1.5 rounded-md press-brutal disabled:opacity-50"
                 style={{
                   background: project.is_reviewed ? "var(--brand-mint)" : "var(--brand-mustard)",
                   border: "2.5px solid var(--brand-ink)",
@@ -111,7 +111,7 @@ export default function ProjectDetailPage() {
                 href={project.github_link}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[11px] font-medium px-2 py-0.5 rounded-[2px] underline"
+                className="text-[11px] font-medium px-2 py-0.5 rounded-sm underline"
                 style={{ border: "1.5px solid var(--brand-ink)" }}
               >
                 GitHub ↗
