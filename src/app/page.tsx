@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { Topbar } from "@/components/Topbar";
 import { ProjectCard } from "@/components/ProjectCard";
 import { AddProjectModal } from "@/components/AddProjectModal";
@@ -9,10 +9,13 @@ import { projectStatus } from "@/lib/api";
 import type { ProjectStatus } from "@/lib/constants";
 import Link from "next/link";
 
+type SortKey = "latest" | "score" | "status";
+
 export default function DashboardPage() {
   const { data: projects = [], isLoading, error } = useProjects();
   const [filter, setFilter] = useState<ProjectStatus>("all");
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortKey>("latest");
   const [modalOpen, setModalOpen] = useState(false);
 
   const filtered = useMemo(() => {
@@ -27,14 +30,25 @@ export default function DashboardPage() {
           p.theme?.toLowerCase().includes(q),
       );
     }
+    if (sort === "score") {
+      out = [...out].sort((a, b) => {
+        const scoreA = (a.market_agent_analysis?.length ?? 0) + (a.code_agent_analysis?.length ?? 0);
+        const scoreB = (b.market_agent_analysis?.length ?? 0) + (b.code_agent_analysis?.length ?? 0);
+        return scoreB - scoreA;
+      });
+    } else if (sort === "status") {
+      const order = { analyzed: 0, flagged: 1, pending: 2 };
+      out = [...out].sort((a, b) => order[projectStatus(a)] - order[projectStatus(b)]);
+    }
     return out;
-  }, [projects, filter, search]);
+  }, [projects, filter, search, sort]);
 
   const stats = useMemo(() => {
     const total = projects.length;
     const analyzed = projects.filter((p) => projectStatus(p) === "analyzed").length;
     const pending = projects.filter((p) => projectStatus(p) === "pending").length;
-    return { total, analyzed, pending };
+    const reviewed = projects.filter((p) => p.is_reviewed).length;
+    return { total, analyzed, pending, reviewed };
   }, [projects]);
 
   return (
@@ -49,10 +63,7 @@ export default function DashboardPage() {
           <div className="relative flex-1 min-w-0 sm:max-w-sm">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={2.5}
+              fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}
             >
               <circle cx="11" cy="11" r="7" />
               <path d="m21 21-4.3-4.3" strokeLinecap="round" />
@@ -61,7 +72,7 @@ export default function DashboardPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search submissions..."
-              className="w-full text-sm pl-9 pr-3 py-2 rounded-md bg-white outline-none"
+              className="w-full text-sm pl-9 pr-3 py-2 rounded-[3px] bg-white outline-none"
               style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
             />
           </div>
@@ -73,7 +84,7 @@ export default function DashboardPage() {
                 <button
                   key={f.key}
                   onClick={() => setFilter(f.key)}
-                  className="text-xs font-medium px-3.5 py-1.5 rounded-md press-brutal"
+                  className="text-xs font-medium px-3.5 py-1.5 rounded-[3px] press-brutal"
                   style={{
                     background: sel ? "var(--brand-ink)" : "white",
                     color: sel ? "var(--brand-yellow)" : "var(--brand-ink)",
@@ -89,7 +100,7 @@ export default function DashboardPage() {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="text-sm font-medium px-4 py-2 rounded-md press-brutal sm:ml-auto"
+            className="text-sm font-medium px-4 py-2 rounded-[3px] press-brutal sm:ml-auto"
             style={{
               background: "var(--brand-coral)",
               color: "var(--brand-ink)",
@@ -101,30 +112,40 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* Stats */}
+        {/* Stats — clickable to filter */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <StatCard label="Total submissions" value={stats.total} sub="This hackathon" />
+          <StatCard
+            label="Total submissions"
+            value={stats.total}
+            sub="This hackathon"
+            onClick={() => setFilter("all")}
+            active={filter === "all"}
+          />
           <StatCard
             label="Analyzed"
             value={stats.analyzed}
             sub={stats.total ? `${Math.round((stats.analyzed / stats.total) * 100)}% complete` : "—"}
             color="var(--brand-mint)"
+            onClick={() => setFilter("analyzed")}
+            active={filter === "analyzed"}
           />
           <StatCard
             label="Pending review"
             value={stats.pending}
             sub="Awaiting agents"
             color="var(--brand-coral)"
+            onClick={() => setFilter("pending")}
+            active={filter === "pending"}
           />
           <StatCard
-            label="Avg market score"
-            value={projects.length ? "7.4" : "—"}
-            sub="Out of 10"
+            label="Reviewed"
+            value={stats.reviewed}
+            sub={stats.total ? `${Math.round((stats.reviewed / stats.total) * 100)}% done` : "—"}
             color="var(--brand-purple)"
           />
         </div>
 
-        {/* Section */}
+        {/* Section header + sort dropdown */}
         <div className="flex items-center justify-between mb-4">
           <span
             className="text-sm font-medium pb-1 inline-block"
@@ -132,12 +153,12 @@ export default function DashboardPage() {
           >
             All submissions
           </span>
-          <span className="text-xs text-muted-foreground">Sort by: latest</span>
+          <SortDropdown value={sort} onChange={setSort} />
         </div>
 
         {error && (
           <div
-            className="p-4 rounded-lg text-sm mb-4 bg-card"
+            className="p-4 rounded-[4px] text-sm mb-4 bg-card"
             style={{ border: "2.5px solid var(--destructive)", boxShadow: "4px 4px 0 var(--destructive)" }}
           >
             Couldn&apos;t reach the Evalio API: {(error as Error).message}
@@ -153,15 +174,11 @@ export default function DashboardPage() {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-lg flex flex-col items-center justify-center gap-2.5 min-h-[170px] px-4 py-6"
-            style={{
-              border: "2.5px dashed #999",
-              background: "transparent",
-              cursor: "pointer",
-            }}
+            className="rounded-[4px] flex flex-col items-center justify-center gap-2.5 min-h-[170px] px-4 py-6"
+            style={{ border: "2.5px dashed #999", background: "transparent", cursor: "pointer" }}
           >
             <div
-              className="w-9 h-9 rounded-md flex items-center justify-center text-2xl text-neutral-500"
+              className="w-9 h-9 rounded-[3px] flex items-center justify-center text-2xl text-neutral-500"
               style={{ border: "2.5px dashed #999" }}
             >
               +
@@ -195,23 +212,33 @@ const FILTERS: { key: ProjectStatus; label: string }[] = [
   { key: "flagged", label: "Flagged" },
 ];
 
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "latest", label: "Latest" },
+  { key: "score", label: "Score" },
+  { key: "status", label: "Status" },
+];
+
 function StatCard({
-  label,
-  value,
-  sub,
-  color,
+  label, value, sub, color, onClick, active,
 }: {
   label: string;
   value: number | string;
   sub: string;
   color?: string;
+  onClick?: () => void;
+  active?: boolean;
 }) {
   return (
-    <div
-      className="bg-card p-4 rounded-lg"
+    <button
+      onClick={onClick}
+      className="bg-card p-4 rounded-[4px] text-left w-full press-brutal transition-transform"
       style={{
         border: `2.5px solid ${color ?? "var(--brand-ink)"}`,
-        boxShadow: `4px 4px 0 ${color ?? "var(--brand-ink)"}`,
+        boxShadow: active
+          ? `6px 6px 0 ${color ?? "var(--brand-ink)"}`
+          : `4px 4px 0 ${color ?? "var(--brand-ink)"}`,
+        outline: active ? `2px solid ${color ?? "var(--brand-ink)"}` : "none",
+        outlineOffset: "2px",
       }}
     >
       <div className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mb-1">
@@ -221,6 +248,72 @@ function StatCard({
         {value}
       </div>
       <div className="text-[11px] text-muted-foreground mt-1">{sub}</div>
+    </button>
+  );
+}
+
+function SortDropdown({ value, onChange }: { value: SortKey; onChange: (k: SortKey) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const current = SORTS.find((s) => s.key === value)!;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-[3px] press-brutal"
+        style={{
+          background: "white",
+          border: "2px solid var(--brand-ink)",
+          boxShadow: "3px 3px 0 var(--brand-ink)",
+          color: "var(--brand-ink)",
+          minWidth: "120px",
+        }}
+      >
+        <span className="flex-1 text-left">↕ {current.label}</span>
+        <svg
+          width="10" height="10" viewBox="0 0 10 10" fill="none"
+          style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}
+        >
+          <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          className="absolute right-0 top-full mt-1 z-20 bg-white rounded-[3px] overflow-hidden"
+          style={{
+            border: "2.5px solid var(--brand-ink)",
+            boxShadow: "4px 4px 0 var(--brand-ink)",
+            minWidth: "140px",
+          }}
+        >
+          {SORTS.map((s, i) => (
+            <button
+              key={s.key}
+              onClick={() => { onChange(s.key); setOpen(false); }}
+              className="w-full text-left text-xs font-medium px-4 py-2.5 flex items-center justify-between gap-3 transition-colors hover:bg-[#F4D738]"
+              style={{
+                borderTop: i > 0 ? "1.5px solid var(--brand-ink)" : "none",
+                background: value === s.key ? "#F4D738" : "white",
+                color: "var(--brand-ink)",
+              }}
+            >
+              {s.label}
+              {value === s.key && <span className="text-[10px]">✓</span>}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -228,12 +321,30 @@ function StatCard({
 function CardSkeleton() {
   return (
     <div
-      className="bg-card rounded-lg p-4 h-[170px] animate-pulse"
+      className="bg-card rounded-[4px] overflow-hidden"
       style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
     >
-      <div className="h-4 bg-neutral-200 rounded w-2/3 mb-3" />
-      <div className="h-3 bg-neutral-100 rounded w-full mb-2" />
-      <div className="h-3 bg-neutral-100 rounded w-5/6" />
+      <div className="h-1.5 bg-neutral-200 animate-pulse" />
+      <div className="p-4 space-y-3">
+        <div className="flex justify-between gap-2">
+          <div className="h-4 bg-neutral-200 rounded animate-pulse flex-1" />
+          <div className="h-4 w-8 bg-neutral-100 rounded animate-pulse" />
+        </div>
+        <div className="h-3 bg-neutral-100 rounded animate-pulse w-full" />
+        <div className="h-3 bg-neutral-100 rounded animate-pulse w-5/6" />
+        <div className="flex gap-1.5 pt-1">
+          <div className="h-4 w-14 bg-neutral-200 rounded animate-pulse" />
+          <div className="h-4 w-14 bg-neutral-200 rounded animate-pulse" />
+        </div>
+        <div className="h-px bg-neutral-200 animate-pulse" />
+        <div className="flex justify-between">
+          <div className="flex gap-1.5">
+            <div className="h-5 w-16 bg-neutral-200 rounded animate-pulse" />
+            <div className="h-5 w-16 bg-neutral-200 rounded animate-pulse" />
+          </div>
+          <div className="h-5 w-14 bg-neutral-100 rounded animate-pulse" />
+        </div>
+      </div>
     </div>
   );
 }
