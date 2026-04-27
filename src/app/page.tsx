@@ -41,12 +41,12 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       <Topbar />
 
-      <main className="px-7 py-6 max-w-7xl mx-auto">
+      <main className="px-4 sm:px-7 py-6 max-w-7xl mx-auto">
         <h1 className="sr-only">Judgy hackathon dashboard</h1>
 
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-          <div className="relative flex-1 max-w-sm">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 mb-5">
+          <div className="relative flex-1 min-w-0 sm:max-w-sm">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
               fill="none"
@@ -66,7 +66,7 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {FILTERS.map((f) => {
               const sel = filter === f.key;
               return (
@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="text-sm font-medium px-4 py-1.5 rounded-[3px] press-brutal"
+            className="text-sm font-medium px-4 py-2 rounded-[3px] press-brutal sm:ml-auto"
             style={{
               background: "var(--brand-coral)",
               color: "var(--brand-ink)",
