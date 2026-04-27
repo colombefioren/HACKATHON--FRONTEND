@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import { Rubik } from "next/font/google";
 import { QueryProvider } from "@/components/providers";
 import { ToastNotification } from "@/components/ToastNotification";
+import { PageTransition } from "@/components/PageTransition";
 import "./globals.css";
+
+const rubik = Rubik({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Evalio — AI hackathon judging panel",
@@ -15,9 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-background">
+      <body className={`${rubik.variable} min-h-screen bg-background`}>
         <QueryProvider>
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
           <ToastNotification />
         </QueryProvider>
       </body>
