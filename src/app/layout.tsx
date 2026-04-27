@@ -4,7 +4,7 @@ import { ToastNotification } from "@/components/ToastNotification";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Judgy — AI hackathon judging panel",
+  title: "Evalio — AI hackathon judging panel",
   description: "AI-powered hackathon project analysis & judging."
 };
 
