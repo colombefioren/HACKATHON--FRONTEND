@@ -10,7 +10,11 @@ const navItems = [
   { href: "/setup", label: "Setup" },
 ] as const;
 
-export function Topbar() {
+interface TopbarProps {
+  submissionsOpen?: boolean;
+}
+
+export function Topbar({ submissionsOpen }: TopbarProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -39,6 +43,18 @@ export function Topbar() {
 
         {/* Desktop nav */}
         <nav className="hidden sm:flex items-center gap-2">
+          {submissionsOpen !== undefined && (
+            <span
+              className="text-[10px] font-medium px-2 py-0.5 rounded-sm mr-2"
+              style={{
+                background: submissionsOpen ? "var(--brand-mint)" : "var(--brand-coral)",
+                border: "1.5px solid var(--brand-ink)",
+                color: "var(--brand-ink)",
+              }}
+            >
+              {submissionsOpen ? "● Open" : "● Closed"}
+            </span>
+          )}
           {navItems.map((item) => {
             const isActive =
               item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -49,32 +65,14 @@ export function Topbar() {
                 className="px-3.5 py-1 text-xs font-medium rounded-sm border-2 transition-colors"
                 style={
                   isActive
-                    ? {
-                        background: "var(--brand-mustard)",
-                        borderColor: "var(--brand-mustard)",
-                        color: "var(--brand-ink)",
-                      }
-                    : {
-                        background: "transparent",
-                        borderColor: "#444",
-                        color: "#ccc",
-                      }
+                    ? { background: "var(--brand-mustard)", borderColor: "var(--brand-mustard)", color: "var(--brand-ink)" }
+                    : { background: "transparent", borderColor: "#444", color: "#ccc" }
                 }
               >
                 {item.label}
               </Link>
             );
           })}
-          <div
-            className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-xs font-medium ml-2"
-            style={{
-              background: "var(--brand-mustard)",
-              border: "2px solid #888",
-              color: "var(--brand-ink)",
-            }}
-          >
-            JG
-          </div>
         </nav>
 
         {/* Mobile hamburger */}
@@ -83,36 +81,30 @@ export function Topbar() {
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle menu"
         >
-          <span
-            className="block w-5 h-0.5 transition-transform origin-center"
-            style={{
-              background: "var(--brand-yellow)",
-              transform: menuOpen ? "translateY(8px) rotate(45deg)" : "none",
-            }}
-          />
-          <span
-            className="block w-5 h-0.5 transition-opacity"
-            style={{
-              background: "var(--brand-yellow)",
-              opacity: menuOpen ? 0 : 1,
-            }}
-          />
-          <span
-            className="block w-5 h-0.5 transition-transform origin-center"
-            style={{
-              background: "var(--brand-yellow)",
-              transform: menuOpen ? "translateY(-8px) rotate(-45deg)" : "none",
-            }}
-          />
+          <span className="block w-5 h-0.5 transition-transform origin-center"
+            style={{ background: "var(--brand-yellow)", transform: menuOpen ? "translateY(8px) rotate(45deg)" : "none" }} />
+          <span className="block w-5 h-0.5 transition-opacity"
+            style={{ background: "var(--brand-yellow)", opacity: menuOpen ? 0 : 1 }} />
+          <span className="block w-5 h-0.5 transition-transform origin-center"
+            style={{ background: "var(--brand-yellow)", transform: menuOpen ? "translateY(-8px) rotate(-45deg)" : "none" }} />
         </button>
       </div>
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <nav
-          className="sm:hidden flex flex-col px-4 pb-4 gap-2"
-          style={{ borderTop: "1.5px solid #333" }}
-        >
+        <nav className="sm:hidden flex flex-col px-4 pb-4 gap-2" style={{ borderTop: "1.5px solid #333" }}>
+          {submissionsOpen !== undefined && (
+            <span
+              className="text-[10px] font-medium px-2 py-1 rounded-sm self-start"
+              style={{
+                background: submissionsOpen ? "var(--brand-mint)" : "var(--brand-coral)",
+                border: "1.5px solid var(--brand-ink)",
+                color: "var(--brand-ink)",
+              }}
+            >
+              Submissions {submissionsOpen ? "open" : "closed"}
+            </span>
+          )}
           {navItems.map((item) => {
             const isActive =
               item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -124,16 +116,8 @@ export function Topbar() {
                 className="px-4 py-2.5 text-sm font-medium rounded-md"
                 style={
                   isActive
-                    ? {
-                        background: "var(--brand-mustard)",
-                        color: "var(--brand-ink)",
-                        border: "2px solid var(--brand-mustard)",
-                      }
-                    : {
-                        background: "transparent",
-                        color: "#ccc",
-                        border: "2px solid #444",
-                      }
+                    ? { background: "var(--brand-mustard)", color: "var(--brand-ink)", border: "2px solid var(--brand-mustard)" }
+                    : { background: "transparent", color: "#ccc", border: "2px solid #444" }
                 }
               >
                 {item.label}
