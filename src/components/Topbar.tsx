@@ -30,7 +30,7 @@ export function Topbar() {
             J
           </div>
           <span className="text-base font-medium tracking-wide" style={{ color: "var(--brand-yellow)" }}>
-            Judgy
+            Evalio
           </span>
           <span className="text-[11px] ml-1 text-neutral-400 hidden sm:inline">
             hackathon judge panel
@@ -121,7 +121,7 @@ export function Topbar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="px-4 py-2.5 text-sm font-medium rounded-[3px]"
+                className="px-4 py-2.5 text-sm font-medium rounded-md"
                 style={
                   isActive
                     ? {
