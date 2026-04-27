@@ -1,7 +1,5 @@
-// API base URL — points to the Judgy backend
-export const API_BASE_URL =
-  (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_JUDGY_API_URL) ||
-  "http://localhost:8000/api";
+// API base URL — points to the Evalio backend
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://192.168.2.167:8000/api";
 
 // Accent colors (CSS var names) cycled per project card
 export const ACCENT_COLORS = [
