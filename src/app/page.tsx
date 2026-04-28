@@ -14,7 +14,7 @@ export default function DashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Topbar />
 
       <main className="px-4 sm:px-7 py-6 max-w-7xl mx-auto">
