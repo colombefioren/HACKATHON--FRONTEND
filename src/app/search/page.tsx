@@ -57,7 +57,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Topbar />
       <main className="px-4 sm:px-7 py-8 max-w-5xl mx-auto">
         <h1 className="text-xl sm:text-2xl font-medium mb-1">Semantic search</h1>

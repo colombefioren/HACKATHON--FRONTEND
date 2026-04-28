@@ -75,7 +75,7 @@ export default function ProjectDetailPage() {
 
   if (error || !project) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen">
         <Topbar />
         <div className="p-4 sm:p-8">
           <p className="text-sm text-destructive">{(error as Error)?.message ?? "Not found"}</p>
