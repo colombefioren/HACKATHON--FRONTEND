@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { QAItem } from "@/lib/api";
+import { Clock } from "lucide-react";
 
 interface QAAccordionProps {
   items: QAItem[];
@@ -11,9 +12,18 @@ export function QAAccordion({ items, accent = "var(--brand-mint)" }: QAAccordion
 
   if (!items.length) {
     return (
-      <p className="text-xs text-muted-foreground italic py-4">
-        No analysis available yet.
-      </p>
+      <div
+        className="flex items-center gap-3 px-4 py-5 rounded-lg"
+        style={{ border: "2px dashed #ccc", background: "#fafafa" }}
+      >
+        <Clock size={18} strokeWidth={2} color="var(--brand-ink)" className="shrink-0" />
+        <div>
+          <p className="text-xs font-medium text-foreground">Analysis pending</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Agents are working on it — results appear automatically.
+          </p>
+        </div>
+      </div>
     );
   }
 

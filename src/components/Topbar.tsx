@@ -7,7 +7,6 @@ import { useState } from "react";
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/search", label: "Search" },
-  { href: "/setup", label: "Setup" },
 ] as const;
 
 interface TopbarProps {
@@ -23,16 +22,11 @@ export function Topbar({ submissionsOpen }: TopbarProps) {
       <div className="h-14 px-4 sm:px-7 flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
-          <div
-            className="w-8 h-8 flex items-center justify-center text-sm font-medium rounded-sm"
-            style={{
-              background: "var(--brand-mustard)",
-              border: "2.5px solid var(--brand-yellow)",
-              color: "var(--brand-ink)",
-            }}
-          >
-            J
-          </div>
+          <img
+            src="/evalio.svg"
+            alt="Evalio"
+            className="w-8 h-8"
+          />
           <span className="text-base font-medium tracking-wide" style={{ color: "var(--brand-yellow)" }}>
             Evalio
           </span>
