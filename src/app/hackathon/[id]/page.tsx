@@ -182,7 +182,7 @@ export default function HackathonPage() {
 
           <div className="flex items-center gap-2 sm:ml-auto">
             <SortDropdown value={sort} onChange={setSort} />
-            <button onClick={() => setAddModalOpen(true)}
+            <button disabled={hackathon?.is_allowed} onClick={() => setAddModalOpen(true)}
               className="text-sm font-medium px-4 py-2 rounded-md press-brutal"
               style={{
                 background: "var(--brand-coral)", color: "var(--brand-ink)",
