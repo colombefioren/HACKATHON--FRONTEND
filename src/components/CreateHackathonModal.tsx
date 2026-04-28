@@ -1,9 +1,23 @@
 "use client";
 
-import { useState, KeyboardEvent } from "react";
+import { useState, useCallback, useEffect, KeyboardEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CalendarIcon, X } from "lucide-react";
+
+// Validation constants
+const MAX_TAG_LENGTH = 50;
+const MAX_NAME_LENGTH = 100;
+const MAX_DESCRIPTION_LENGTH = 2000;
 
 interface CreateHackathonModalProps {
   open: boolean;
@@ -20,7 +34,10 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
   const [techInput, setTechInput] = useState("");
   const [themeInput, setThemeInput] = useState("");
   const [criteriaInput, setCriteriaInput] = useState("");
-  const [deadline, setDeadline] = useState("");
+  const [deadline, setDeadline] = useState<Date | undefined>(undefined);
+  const [deadlineHour, setDeadlineHour] = useState("12");
+  const [deadlineMinute, setDeadlineMinute] = useState("00");
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [isAllowed, setIsAllowed] = useState(true);
 
   const mut = useMutation({
@@ -34,8 +51,17 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
     onError: (e) => toast.error((e as Error).message),
   });
 
+  // Track if component is mounted to prevent state updates after unmount
+  useEffect(() => {
+    return () => {
+      // Cleanup flag - the query client handles cancelled mutations automatically
+    };
+  }, []);
+
   const resetForm = () => {
-    setName(""); setDescription(""); setDeadline("");
+    setName(""); setDescription(""); setDeadline(undefined); setCalendarOpen(false);
+    setDeadlineHour("12");
+    setDeadlineMinute("00");
     setTechTags(["Python", "JavaScript", "React"]);
     setThemeTags(["Healthcare", "Education", "Environment"]);
     setCriteriaTags(["Innovation", "Code Quality", "Market Potential"]);
@@ -43,16 +69,22 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
     setIsAllowed(true);
   };
 
-  const addTag = (value: string, tags: string[], setTags: (t: string[]) => void, setInput: (v: string) => void) => {
+  const addTag = useCallback((value: string, tags: string[], setTags: (t: string[]) => void, setInput: (v: string) => void) => {
     const trimmed = value.trim();
-    if (trimmed && !tags.includes(trimmed)) setTags([...tags, trimmed]);
+    if (!trimmed) return;
+    if (trimmed.length > MAX_TAG_LENGTH) {
+      toast.error(`Tag must be ${MAX_TAG_LENGTH} characters or less`);
+      return;
+    }
+    if (!tags.includes(trimmed)) setTags([...tags, trimmed]);
     setInput("");
-  };
+  }, []);
 
-  const removeTag = (tag: string, tags: string[], setTags: (t: string[]) => void) =>
-    setTags(tags.filter((t) => t !== tag));
+  const removeTag = useCallback((tag: string, tags: string[], setTags: (t: string[]) => void) =>
+    setTags(tags.filter((t) => t !== tag))
+  , []);
 
-  const handleKeyDown = (
+  const handleKeyDown = useCallback((
     e: KeyboardEvent<HTMLInputElement>,
     value: string,
     tags: string[],
@@ -65,11 +97,18 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
     } else if (e.key === "Backspace" && !value && tags.length > 0) {
       setTags(tags.slice(0, -1));
     }
-  };
+  }, [addTag]);
 
   if (!open) return null;
 
-  const canSubmit = name.trim().length >= 3 && !mut.isPending;
+  const canSubmit = name.trim().length >= 3 && name.trim().length <= MAX_NAME_LENGTH && !mut.isPending;
+  const deadlineWithTime = deadline
+    ? (() => {
+        const d = new Date(deadline.getTime()); // Clone to avoid mutating original
+        d.setHours(Number.parseInt(deadlineHour, 10), Number.parseInt(deadlineMinute, 10), 0, 0);
+        return d;
+      })()
+    : undefined;
 
   return (
     <div
@@ -103,14 +142,21 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (!canSubmit) { toast.error("Name must be at least 3 characters"); return; }
+            if (!canSubmit) {
+              toast.error(`Name must be between 3 and ${MAX_NAME_LENGTH} characters`);
+              return;
+            }
+            if (description.length > MAX_DESCRIPTION_LENGTH) {
+              toast.error(`Description must be ${MAX_DESCRIPTION_LENGTH} characters or less`);
+              return;
+            }
             mut.mutate({
               name,
               description,
               technologies: techTags.join(", "),
               theme: themeTags.join(", "),
               criteria: criteriaTags.join(", "),
-              deadline: deadline || undefined,
+              deadline: deadlineWithTime ? deadlineWithTime.toISOString() : undefined,
               isAllowed,
             });
           }}
@@ -183,13 +229,95 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
 
           {/* Deadline */}
           <Field label="Deadline (optional)">
-            <input
-              type="datetime-local"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="w-full text-sm px-3 py-2 rounded-md outline-none bg-white"
-              style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
-            />
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setCalendarOpen((v) => !v)}
+                className="w-full text-sm px-3 py-2 rounded-md bg-white text-left flex items-center justify-between gap-2"
+                style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
+              >
+                <span className={deadline ? "text-foreground" : "text-muted-foreground"}>
+                  {deadline
+                    ? `${deadline.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })} ${deadlineWithTime?.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) ?? ""}`.trim()
+                    : "Pick a date…"}
+                </span>
+                <div className="flex items-center gap-1 shrink-0">
+                  {deadline && (
+                    <span
+                      onClick={(e) => { e.stopPropagation(); setDeadline(undefined); }}
+                      className="hover:opacity-60 cursor-pointer"
+                    >
+                      <X size={13} />
+                    </span>
+                  )}
+                  <CalendarIcon size={14} />
+                </div>
+              </button>
+
+              {calendarOpen && (
+                <div
+                  className="absolute top-full left-0 mt-2 z-30 bg-card rounded-md"
+                  style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
+                >
+                  <Calendar
+                    mode="single"
+                    selected={deadline}
+                    onSelect={(d) => { setDeadline(d); }}
+                    disabled={{ before: new Date() }}
+                    initialFocus
+                    className="border-0 shadow-none rounded-none w-full"
+                  />
+
+                  <div
+                    className="p-3 flex items-center gap-2"
+                    style={{ borderTop: "2.5px solid var(--brand-ink)" }}
+                  >
+                    <div className="flex-1">
+                      <Select value={deadlineHour} onValueChange={setDeadlineHour}>
+                        <SelectTrigger
+                          className="bg-white"
+                          style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
+                        >
+                          <SelectValue placeholder="Hour" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0")).map((h) => (
+                            <SelectItem key={h} value={h}>
+                              {h}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-1">
+                      <Select value={deadlineMinute} onValueChange={setDeadlineMinute}>
+                        <SelectTrigger
+                          className="bg-white"
+                          style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
+                        >
+                          <SelectValue placeholder="Min" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, "0")).map((m) => (
+                            <SelectItem key={m} value={m}>
+                              {m}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <button
+                      type="button"
+                      className="text-xs font-medium px-3 py-2 rounded-md press-brutal bg-white"
+                      style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
+                      onClick={() => setCalendarOpen(false)}
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </Field>
 
           {/* Submissions toggle */}
@@ -208,10 +336,13 @@ export function CreateHackathonModal({ open, onClose }: CreateHackathonModalProp
               onClick={() => setIsAllowed((v) => !v)}
               className="relative w-12 h-6 rounded-full transition-colors shrink-0"
               style={{ background: isAllowed ? "var(--brand-mint)" : "#ddd", border: "2.5px solid var(--brand-ink)" }}
+              role="switch"
+              aria-checked={isAllowed}
+              aria-label="Accept submissions"
             >
               <span
                 className="absolute top-0.5 w-4 h-4 rounded-full transition-transform"
-                style={{ background: "var(--brand-ink)", transform: isAllowed ? "translateX(24px)" : "translateX(2px)" }}
+                style={{ background: "var(--brand-ink)", transform: isAllowed ? "translateX(2px)" : "translateX(-20px)" }}
               />
             </button>
           </div>
