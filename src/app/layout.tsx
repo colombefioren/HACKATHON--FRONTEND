@@ -5,6 +5,7 @@ import { ToastNotification } from "@/components/ToastNotification";
 import { PageTransition } from "@/components/PageTransition";
 import { GlobalProgressBar } from "@/components/GlobalProgressBar";
 import { StaleIndicator } from "@/components/StaleIndicator";
+import { FlickeringGrid } from "@/registry/magicui/flickering-grid";
 import "./globals.css";
 
 const rubik = Rubik({
@@ -29,15 +30,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${rubik.variable} min-h-screen bg-background`}>
+    <html lang="en" className="bg-background">
+      <body className={`${rubik.variable} min-h-screen`}>
+        <FlickeringGrid
+          className="fixed inset-0 z-0 size-full"
+          squareSize={3}
+          gridGap={5}
+          color="#6B7280"
+          maxOpacity={0.25}
+          flickerChance={0.1}
+        />
         <QueryProvider>
-          <GlobalProgressBar />
-          <StaleIndicator />
-          <PageTransition>
-            {children}
-          </PageTransition>
-          <ToastNotification />
+          <div className="relative z-10">
+            <GlobalProgressBar />
+            <StaleIndicator />
+            <PageTransition>
+              {children}
+            </PageTransition>
+            <ToastNotification />
+          </div>
         </QueryProvider>
       </body>
     </html>
