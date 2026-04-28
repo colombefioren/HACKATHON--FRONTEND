@@ -95,8 +95,8 @@ export default function ProjectDetailPage() {
 
         {/* Breadcrumb + prev/next */}
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <Link href="/" className="text-xs text-muted-foreground hover:underline">
-            ← Back to dashboard
+          <Link href={project.hackathon_id ? `/hackathon/${project.hackathon_id}` : "/"} className="text-xs text-muted-foreground hover:underline">
+            ← Back to hackathon
           </Link>
           <div className="flex gap-2">
             {prevProject && (
