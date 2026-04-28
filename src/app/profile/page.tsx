@@ -12,10 +12,6 @@ const ProfilePage = async () => {
     redirect("/auth");
   }
 
-  return (
-    <div className="flex flex-col w-full items-center justify-between space-y-4">
-      <ProfileInfo />
-    </div>
-  );
+  return <ProfileInfo />;
 };
 export default ProfilePage;

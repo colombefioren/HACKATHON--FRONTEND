@@ -70,7 +70,7 @@ export const SignInForm = ({ onSuccess }: SignInFormProps) => {
   return (
     <form onSubmit={form.handleSubmit(submitLoginData)} className="space-y-4">
       <div>
-        <label htmlFor="email" className="block text-xs font-medium text-slate-300 mb-1.5">
+        <label htmlFor="email" className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
           Email
         </label>
         <input
@@ -78,15 +78,16 @@ export const SignInForm = ({ onSuccess }: SignInFormProps) => {
           type="email"
           {...form.register("email")}
           disabled={isPending}
-          className="input-dark w-full rounded-lg px-3 py-2.5 text-sm placeholder:text-slate-500"
-          style={{ fontFamily: 'var(--font-jakarta)' }}
+          className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+          style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
           placeholder="you@example.com"
         />
         {form.formState.errors.email && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-red-400 mt-1"
+            className="text-xs mt-1"
+            style={{ color: 'var(--brand-coral)' }}
           >
             {form.formState.errors.email.message}
           </motion.p>
@@ -95,12 +96,13 @@ export const SignInForm = ({ onSuccess }: SignInFormProps) => {
 
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <label htmlFor="password" className="block text-xs font-medium text-slate-300">
+          <label htmlFor="password" className="block text-xs font-medium text-foreground uppercase tracking-wider">
             Password
           </label>
-          <button 
-            type="button" 
-            className="text-xs text-slate-400 hover:text-purple-400 transition-colors cursor-pointer"
+          <button
+            type="button"
+            className="text-xs cursor-pointer hover:underline"
+            style={{ color: 'var(--brand-ink)' }}
             onClick={() => router.push('/forgot-password')}
           >
             Forgot?
@@ -111,15 +113,16 @@ export const SignInForm = ({ onSuccess }: SignInFormProps) => {
           type="password"
           {...form.register("password")}
           disabled={isPending}
-          className="input-dark w-full rounded-lg px-3 py-2.5 text-sm"
-          style={{ fontFamily: 'var(--font-jakarta)' }}
+          className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+          style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
           placeholder="••••••••"
         />
         {form.formState.errors.password && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-red-400 mt-1"
+            className="text-xs mt-1"
+            style={{ color: 'var(--brand-coral)' }}
           >
             {form.formState.errors.password.message}
           </motion.p>
@@ -129,8 +132,8 @@ export const SignInForm = ({ onSuccess }: SignInFormProps) => {
       <button
         type="submit"
         disabled={isPending}
-        className="btn-gradient w-full flex items-center justify-center py-2.5 rounded-lg font-medium text-sm cursor-pointer disabled:cursor-not-allowed"
-        style={{ fontFamily: 'var(--font-jakarta)' }}
+        className="w-full flex items-center justify-center py-2.5 rounded-[3px] font-medium text-sm cursor-pointer disabled:opacity-50 press-brutal"
+        style={{ background: 'var(--brand-coral)', color: 'var(--brand-ink)', border: '2.5px solid var(--brand-ink)', boxShadow: '4px 4px 0 var(--brand-ink)' }}
       >
         {isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />

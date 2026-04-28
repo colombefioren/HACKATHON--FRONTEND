@@ -58,7 +58,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
           },
           onSuccess: () => {
             toast.success("Account created successfully");
-            
+
               router.push("/profile");
           },
         },
@@ -75,7 +75,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
     <form onSubmit={form.handleSubmit(submitRegisterData)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="firstName" className="block text-xs font-medium text-slate-300 mb-1.5">
+          <label htmlFor="firstName" className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
             First Name
           </label>
           <input
@@ -83,15 +83,16 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
             type="text"
             {...form.register("firstName")}
             disabled={isPending}
-            className="input-dark w-full rounded-lg px-3 py-2.5 text-sm placeholder:text-slate-500"
-            style={{ fontFamily: 'var(--font-jakarta)' }}
+            className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+            style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
             placeholder="John"
           />
           {form.formState.errors.firstName && (
             <motion.p
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-xs text-red-400 mt-1"
+              className="text-xs mt-1"
+              style={{ color: 'var(--brand-coral)' }}
             >
               {form.formState.errors.firstName.message}
             </motion.p>
@@ -99,7 +100,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
         </div>
 
         <div>
-          <label htmlFor="lastName" className="block text-xs font-medium text-slate-300 mb-1.5">
+          <label htmlFor="lastName" className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
             Last Name
           </label>
           <input
@@ -107,15 +108,16 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
             type="text"
             {...form.register("lastName")}
             disabled={isPending}
-            className="input-dark w-full rounded-lg px-3 py-2.5 text-sm placeholder:text-slate-500"
-            style={{ fontFamily: 'var(--font-jakarta)' }}
+            className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+            style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
             placeholder="Doe"
           />
           {form.formState.errors.lastName && (
             <motion.p
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-xs text-red-400 mt-1"
+              className="text-xs mt-1"
+              style={{ color: 'var(--brand-coral)' }}
             >
               {form.formState.errors.lastName.message}
             </motion.p>
@@ -124,7 +126,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       </div>
 
       <div>
-        <label htmlFor="username" className="block text-xs font-medium text-slate-300 mb-1.5">
+        <label htmlFor="username" className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
           Username
         </label>
         <input
@@ -132,15 +134,16 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
           type="text"
           {...form.register("username")}
           disabled={isPending}
-          className="input-dark w-full rounded-lg px-3 py-2.5 text-sm placeholder:text-slate-500"
-          style={{ fontFamily: 'var(--font-jakarta)' }}
+          className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+          style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
           placeholder="john_doe123"
         />
         {form.formState.errors.username && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-red-400 mt-1"
+            className="text-xs mt-1"
+            style={{ color: 'var(--brand-coral)' }}
           >
             {form.formState.errors.username.message}
           </motion.p>
@@ -148,7 +151,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-xs font-medium text-slate-300 mb-1.5">
+        <label htmlFor="email" className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
           Email
         </label>
         <input
@@ -156,15 +159,16 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
           type="email"
           {...form.register("email")}
           disabled={isPending}
-          className="input-dark w-full rounded-lg px-3 py-2.5 text-sm placeholder:text-slate-500"
-          style={{ fontFamily: 'var(--font-jakarta)' }}
+          className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+          style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
           placeholder="you@example.com"
         />
         {form.formState.errors.email && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-red-400 mt-1"
+            className="text-xs mt-1"
+            style={{ color: 'var(--brand-coral)' }}
           >
             {form.formState.errors.email.message}
           </motion.p>
@@ -172,7 +176,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-xs font-medium text-slate-300 mb-1.5">
+        <label htmlFor="password" className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
           Password
         </label>
         <input
@@ -180,15 +184,16 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
           type="password"
           {...form.register("password")}
           disabled={isPending}
-          className="input-dark w-full rounded-lg px-3 py-2.5 text-sm"
-          style={{ fontFamily: 'var(--font-jakarta)' }}
+          className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+          style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
           placeholder="Min. 6 characters"
         />
         {form.formState.errors.password && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-red-400 mt-1"
+            className="text-xs mt-1"
+            style={{ color: 'var(--brand-coral)' }}
           >
             {form.formState.errors.password.message}
           </motion.p>
@@ -198,8 +203,8 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
       <button
         type="submit"
         disabled={isPending}
-        className="btn-gradient w-full flex items-center justify-center py-2.5 rounded-lg font-medium text-sm cursor-pointer disabled:cursor-not-allowed"
-        style={{ fontFamily: 'var(--font-jakarta)' }}
+        className="w-full flex items-center justify-center py-2.5 rounded-[3px] font-medium text-sm cursor-pointer disabled:opacity-50 press-brutal"
+        style={{ background: 'var(--brand-mustard)', color: 'var(--brand-ink)', border: '2.5px solid var(--brand-ink)', boxShadow: '4px 4px 0 var(--brand-ink)' }}
       >
         {isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />

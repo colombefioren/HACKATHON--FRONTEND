@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 const ProfileSettingPage = async () => {
-  const session = auth.api.getSession({
+  const session = await auth.api.getSession({
     headers: await headers(),
   });
 
@@ -12,10 +12,6 @@ const ProfileSettingPage = async () => {
     redirect("/auth");
   }
 
-  return (
-    <>
-      <UpdateProfilePanel />
-    </>
-  );
+  return <UpdateProfilePanel />;
 };
 export default ProfileSettingPage;

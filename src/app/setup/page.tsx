@@ -35,6 +35,7 @@ export default function SetupPage() {
     if(!user){
       router.push("/auth");
     }
+  const [name, setName] = useState("");
   const [techTags, setTechTags] = useState<string[]>(["Python", "JavaScript", "React", "Node.js", "AI/ML"]);
   const [themeTags, setThemeTags] = useState<string[]>(["Healthcare", "Education", "Environment", "Finance", "Social Good"]);
   const [techInput, setTechInput] = useState("");
@@ -127,9 +128,11 @@ export default function SetupPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            if (!name.trim()) { toast.warning("Enter a hackathon name"); return; }
             if (techTags.length === 0) { toast.warning("Add at least one technology"); return; }
             if (themeTags.length === 0) { toast.warning("Add at least one theme"); return; }
             mut.mutate({
+              name: name.trim(),
               technologies: techTags.join(", "),
               theme: themeTags.join(", "),
               isAllowed,
@@ -138,6 +141,21 @@ export default function SetupPage() {
           className="bg-card rounded-[4px] p-6 space-y-6"
           style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
         >
+          {/* Name */}
+          <div>
+            <label className="block text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
+              Hackathon Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. AI Innovation Challenge"
+              className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none placeholder:text-muted-foreground"
+              style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
+            />
+          </div>
+
           {/* Technologies */}
           <div>
             <label className="block text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">

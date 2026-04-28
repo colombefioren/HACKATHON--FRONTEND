@@ -1,7 +1,4 @@
 import { useForm, useWatch, Controller } from "react-hook-form";
-import { Field, FieldLabel, FieldError } from "../ui/field";
-import { Input } from "../ui/input";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUser } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
@@ -9,7 +6,7 @@ import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { Button } from "../ui/button";
 import { updateProfileInfoSchema, UpdateProfileInfoSchema } from "@/lib/validation/profile";
-
+import { motion } from "framer-motion";
 
 const UpdateInfoForm = () => {
 
@@ -17,15 +14,15 @@ const UpdateInfoForm = () => {
   const [isPending, setIsPending] = useState(false);
 
   const defaultValues = {
-    firstName: user?.firstName ?? undefined,
-    lastName: user?.lastName ?? undefined,
-    username: user?.username ?? undefined,
+    firstName: user?.firstName ?? "",
+    lastName: user?.lastName ?? "",
+    username: user?.username ?? "",
   };
 
   const form = useForm<UpdateProfileInfoSchema>({
     defaultValues,
     resolver: zodResolver(updateProfileInfoSchema),
-    mode:"onSubmit"
+    mode: "onSubmit"
   });
 
   const watchedValues = useWatch({ control: form.control });
@@ -79,44 +76,97 @@ const UpdateInfoForm = () => {
   if (!user || isLoadingUser) return <div>Loading...</div>;
 
   return (
-    <form className="space-y-6 bg-black" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
       <Controller
         control={form.control}
         name="firstName"
         render={({ field, fieldState }) => (
-          <Field>
-            <FieldLabel>First Name</FieldLabel>
-            <Input {...field} type="text" />
-            <FieldError errors={fieldState.error ? [{ message: fieldState.error.message }] : []} />
-          </Field>
+          <div>
+            <label className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
+              First Name
+            </label>
+            <input
+              {...field}
+              type="text"
+              className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none"
+              style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
+            />
+            {fieldState.error && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs mt-1"
+                style={{ color: 'var(--brand-coral)' }}
+              >
+                {fieldState.error.message}
+              </motion.p>
+            )}
+          </div>
         )}
       />
       <Controller
         control={form.control}
         name="lastName"
         render={({ field, fieldState }) => (
-          <Field>
-            <FieldLabel>Last Name</FieldLabel>
-            <Input {...field} type="text" />
-            <FieldError errors={fieldState.error ? [{ message: fieldState.error.message }] : []} />
-          </Field>
+          <div>
+            <label className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
+              Last Name
+            </label>
+            <input
+              {...field}
+              type="text"
+              className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none"
+              style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
+            />
+            {fieldState.error && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs mt-1"
+                style={{ color: 'var(--brand-coral)' }}
+              >
+                {fieldState.error.message}
+              </motion.p>
+            )}
+          </div>
         )}
       />
       <Controller
         control={form.control}
         name="username"
         render={({ field, fieldState }) => (
-          <Field>
-            <FieldLabel>Username</FieldLabel>
-            <Input {...field} type="text" />
-            <FieldError errors={fieldState.error ? [{ message: fieldState.error.message }] : []} />
-          </Field>
+          <div>
+            <label className="block text-xs font-medium text-foreground mb-1.5 uppercase tracking-wider">
+              Username
+            </label>
+            <input
+              {...field}
+              type="text"
+              className="w-full rounded-[3px] px-3 py-2.5 text-sm bg-white outline-none"
+              style={{ border: '2.5px solid var(--brand-ink)', boxShadow: '3px 3px 0 var(--brand-ink)' }}
+            />
+            {fieldState.error && (
+              <motion.p
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs mt-1"
+                style={{ color: 'var(--brand-coral)' }}
+              >
+                {fieldState.error.message}
+              </motion.p>
+            )}
+          </div>
         )}
       />
 
-      <Button disabled={!isDirty} type="submit">
+      <button
+        type="submit"
+        disabled={!isDirty || isPending}
+        className="w-full flex items-center justify-center py-2.5 rounded-[3px] font-medium text-sm cursor-pointer disabled:opacity-50 press-brutal"
+        style={{ background: 'var(--brand-mint)', color: 'var(--brand-ink)', border: '2.5px solid var(--brand-ink)', boxShadow: '4px 4px 0 var(--brand-ink)' }}
+      >
         {isPending ? "Saving..." : "Save Changes"}
-      </Button>
+      </button>
     </form>
   );
 };
