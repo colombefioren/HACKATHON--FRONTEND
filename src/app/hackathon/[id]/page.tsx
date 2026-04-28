@@ -56,7 +56,8 @@ export default function HackathonPage() {
   const themes = hackathon?.theme?.split(",").map((t) => t.trim()).filter(Boolean) ?? [];
   const criteria = hackathon?.criteria?.split(",").map((t) => t.trim()).filter(Boolean) ?? [];
   const deadline = hackathon?.deadline ? new Date(hackathon.deadline) : null;
-  const isOpen = hackathon?.isAllowed ?? false;
+  const isExpired = deadline ? deadline < new Date() : false;
+  const isOpen = hackathon?.isAllowed ?? hackathon?.is_allowed ?? false;
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,12 +85,12 @@ export default function HackathonPage() {
                   <span
                     className="text-[10px] font-medium px-2 py-0.5 rounded-sm"
                     style={{
-                      background: isOpen ? "var(--brand-mint)" : "var(--brand-coral)",
+                      background: isOpen && !isExpired ? "var(--brand-mint)" : "var(--brand-coral)",
                       border: "1.5px solid var(--brand-ink)",
                       color: "var(--brand-ink)",
                     }}
                   >
-                    {isOpen ? "● Open" : "● Closed"}
+                    {isExpired ? "Expired" : isOpen ? "● Open" : "● Closed"}
                   </span>
                 </div>
                 {hackathon.description && (
@@ -182,14 +183,15 @@ export default function HackathonPage() {
 
           <div className="flex items-center gap-2 sm:ml-auto">
             <SortDropdown value={sort} onChange={setSort} />
-            <button onClick={() => setAddModalOpen(true)}
-              className="text-sm font-medium px-4 py-2 rounded-md press-brutal"
+            <button
+              onClick={() => setAddModalOpen(true)}
+              disabled={isExpired || !isOpen}
+              className="text-sm font-medium px-4 py-2 rounded-md press-brutal disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
               style={{
                 background: "var(--brand-coral)", color: "var(--brand-ink)",
                 border: "2.5px solid var(--brand-ink)", boxShadow: "4px 4px 0 var(--brand-ink)",
               }}
-              
-              >
+            >
               + Add project
             </button>
           </div>
@@ -231,7 +233,7 @@ export default function HackathonPage() {
         )}
       </main>
 
-      <AddProjectModal open={addModalOpen} onClose={() => setAddModalOpen(false)} />
+      <AddProjectModal open={addModalOpen} onClose={() => setAddModalOpen(false)} hackathonId={id} />
     </div>
   );
 }

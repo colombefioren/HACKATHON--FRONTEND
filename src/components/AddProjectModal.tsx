@@ -8,6 +8,7 @@ import { toast } from "sonner";
 interface AddProjectModalProps {
   open: boolean;
   onClose: () => void;
+  hackathonId?: number | string;
 }
 
 // Validate GitHub URL format
@@ -26,7 +27,7 @@ function isValidShortDescription(desc: string): boolean {
   return trimmed.length >= 5 && trimmed.length <= 100;
 }
 
-export function AddProjectModal({ open, onClose }: AddProjectModalProps) {
+export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalProps) {
   const qc = useQueryClient();
   const [shortDescription, setShort] = useState("");
   const [longDescription, setLong] = useState("");
@@ -35,9 +36,9 @@ export function AddProjectModal({ open, onClose }: AddProjectModalProps) {
 
   const createMut = useMutation({
     mutationFn: api.createProject,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Project submitted — agents are analyzing it now");
-      qc.invalidateQueries({ queryKey: ["projects"] });
+      qc.invalidateQueries({ queryKey: ["hackathon-projects"] });
       setShort("");
       setLong("");
       setGithub("");
@@ -89,7 +90,7 @@ export function AddProjectModal({ open, onClose }: AddProjectModalProps) {
               }
               return;
             }
-            createMut.mutate({ shortDescription, longDescription, githubLink });
+            createMut.mutate({ shortDescription, longDescription, githubLink, hackathonId });
           }}
           className="space-y-4"
         >
