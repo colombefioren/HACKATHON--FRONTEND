@@ -12,22 +12,22 @@ export function useChat(projectId?: string) {
       setPending(true);
       setError(null);
       // Optimistic placeholder
-      const optimistic: ChatTurn = { input: question, output: "" };
-      setHistory((h) => [...h, optimistic]);
+      setHistory((h) => [...h, { input: question, output: "" }]);
       try {
         const res = projectId
-          ? await api.chat({ project_id: projectId, question, chathistory: history })
+          ? await api.chat({ project_id: projectId, question, chathistory: [] })
           : await api.simpleChat(question);
-        setHistory(res.chathistory ?? [...history, { input: question, output: res.answer }]);
+        // Use functional update to avoid stale closure + use server history
+        setHistory(res.chathistory ?? [{ input: question, output: res.answer }]);
       } catch (e) {
         setError((e as Error).message);
-        // remove optimistic
+        // remove optimistic entry
         setHistory((h) => h.slice(0, -1));
       } finally {
         setPending(false);
       }
     },
-    [history, projectId],
+    [projectId],
   );
 
   const reset = useCallback(() => setHistory([]), []);
