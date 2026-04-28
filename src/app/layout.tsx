@@ -6,6 +6,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { GlobalProgressBar } from "@/components/GlobalProgressBar";
 import { StaleIndicator } from "@/components/StaleIndicator";
 import "./globals.css";
+import ProfileInitializer from "@/components/profile/ProfileInitializer";
 
 const rubik = Rubik({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className={`${rubik.variable} min-h-screen bg-background`}>
         <QueryProvider>
           <GlobalProgressBar />
+          <ProfileInitializer/>
           <StaleIndicator />
           <PageTransition>
             {children}
