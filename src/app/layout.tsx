@@ -3,6 +3,8 @@ import { Rubik } from "next/font/google";
 import { QueryProvider } from "@/components/providers";
 import { ToastNotification } from "@/components/ToastNotification";
 import { PageTransition } from "@/components/PageTransition";
+import { GlobalProgressBar } from "@/components/GlobalProgressBar";
+import { StaleIndicator } from "@/components/StaleIndicator";
 import "./globals.css";
 
 const rubik = Rubik({
@@ -13,7 +15,12 @@ const rubik = Rubik({
 
 export const metadata: Metadata = {
   title: "Evalio — AI hackathon judging panel",
-  description: "AI-powered hackathon project analysis & judging."
+  description: "AI-powered hackathon project analysis & judging.",
+  icons: {
+    icon: "/evalio.svg",
+    shortcut: "/evalio.svg",
+    apple: "/evalio.svg",
+  },
 };
 
 export default function RootLayout({
@@ -25,6 +32,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${rubik.variable} min-h-screen bg-background`}>
         <QueryProvider>
+          <GlobalProgressBar />
+          <StaleIndicator />
           <PageTransition>
             {children}
           </PageTransition>
