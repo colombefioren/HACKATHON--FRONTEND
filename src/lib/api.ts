@@ -3,6 +3,7 @@ import { API_BASE_URL } from "./constants";
 // ============= Types =============
 
 export interface QAItem {
+  name: ReactNode;
   question: string;
   answer: string;
 }
