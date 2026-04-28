@@ -42,7 +42,7 @@ export function QAAccordion({ items, accent = "var(--brand-mint)" }: QAAccordion
               className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium"
               style={{ background: open ? accent : "transparent" }}
             >
-              <span className="flex-1">{item.question}</span>
+              <span className="flex-1">{item.name ? item.name : item.question}</span>
               <span className="text-base">{open ? "−" : "+"}</span>
             </button>
             {open && (
