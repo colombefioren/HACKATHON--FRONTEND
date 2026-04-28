@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Evalue - Hackathon Project Analysis API
+  title: Evalio - Hackathon Project Analysis API
   description: |
     AI-powered hackathon project analysis platform that provides:
     - Automated market research and analysis
@@ -19,8 +19,8 @@ info:
     Results may take 30-60 seconds to appear.
   version: 1.0.0
   contact:
-    name: Evalue API Support
-    email: support@evalue.com
+    name: Evalio API Support
+    email: support@evalio.com
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -28,7 +28,7 @@ info:
 servers:
   - url: http://localhost:8000/api
     description: Local development server
-  - url: https://api.Evalue.com/v1
+  - url: https://api.Evalio.com/v1
     description: Production server (future)
 
 tags:
@@ -68,12 +68,24 @@ paths:
                   Hello:
                     type: string
                     example: "World"
-              example:
-                Hello: "World"
-      x-code-samples:
-        - lang: curl
-          source: |
-            curl http://localhost:8000/api
+
+  /crud-agent:
+    get:
+      tags:
+        - Projects
+      summary: CRUD agent status
+      description: Returns a simple status message
+      responses:
+        '200':
+          description: Status message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hello from Crud Agent"
 
   /market-agent:
     get:
@@ -643,8 +655,10 @@ paths:
     post:
       tags:
         - Hackathons
-      summary: Create a new hackathon configuration
-      description: Set up a hackathon with themes, required technologies, and access control
+      summary: Create a new hackathon with evaluation criteria
+      description: |
+        Create a hackathon with evaluation criteria.
+        The criteria field is a comma-separated list that the AI will use to evaluate projects.
       operationId: createHackathon
       requestBody:
         required: true
@@ -653,29 +667,34 @@ paths:
             schema:
               type: object
               properties:
-                technologies:
+                name:
                   type: string
-                  description: Comma-separated list of required/available technologies
-                  example: "Python, JavaScript, React, Node.js, AI/ML, PostgreSQL"
+                  description: Hackathon name
+                  example: "AI Hackathon 2024"
+                description:
+                  type: string
+                  description: Hackathon description
+                  example: "Build with AI technologies"
                 theme:
                   type: string
-                  description: Comma-separated list of hackathon themes
-                  example: "Healthcare, Education, Environment, Finance, Social Good"
+                  description: Theme (optional)
+                  example: "Healthcare"
                 isAllowed:
                   type: boolean
-                  description: Whether the hackathon is accepting submissions
+                  description: Whether submissions are allowed
                   default: false
                   example: true
-            examples:
-              tech_hackathon:
-                summary: Technology-focused hackathon
-                value:
-                  technologies: "Python, JavaScript, React, Node.js, AI/ML, Docker, AWS"
-                  theme: "Healthcare, Education, Fintech, Environment, Social Good"
-                  isAllowed: true
+                criteria:
+                  type: string
+                  description: Comma-separated evaluation criteria
+                  example: "Code Quality, Innovation, Tech Stack"
+                deadline:
+                  type: string
+                  format: date-time
+                  description: Deadline timestamp (optional)
       responses:
         '200':
-          description: Hackathon created successfully
+          description: Hackathon created
           content:
             application/json:
               schema:
@@ -683,25 +702,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Hackathon created"
+                  hackathon_id:
+                    type: integer
               example:
                 message: "Hackathon created"
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      x-code-samples:
-        - lang: curl
-          source: |
-            curl -X POST http://localhost:8000/api/create-hackathon \
-              -H "Content-Type: application/json" \
-              -d '{
-                "technologies": "Python, JavaScript, React, Node.js, AI/ML",
-                "theme": "Healthcare, Education, Environment",
-                "isAllowed": true
-              }'
+                hackathon_id: 1
 
   /create-project:
     post:
@@ -808,11 +813,130 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "successful"
                   projects:
                     type: array
                     items:
                       $ref: '#/components/schemas/Project'
+
+  /get-hackathon/{id}:
+    get:
+      tags:
+        - Hackathons
+      summary: Get hackathon details
+      description: Get details of a specific hackathon by ID
+      operationId: getHackathon
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Hackathon details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hackathon:
+                    type: object
+
+  /get-all-hackathons:
+    get:
+      tags:
+        - Hackathons
+      summary: List all hackathons
+      description: Get list of all hackathons
+      operationId: getAllHackathons
+      responses:
+        '200':
+          description: List of hackathons
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hackathons:
+                    type: array
+
+  /get-hackathon-projects/{id}:
+    get:
+      tags:
+        - Projects
+      summary: List projects in a hackathon
+      description: Get all projects submitted to a specific hackathon
+      operationId: getHackathonProjects
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+
+  /get-project-score/{project_id}:
+    get:
+      tags:
+        - Scoring
+      summary: Get project score and evaluations
+      description: Get total score and evaluation details for a project
+      operationId: getProjectScore
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Project scores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_score:
+                    type: number
+                  scores:
+                    type: object
+
+  /get-hackathon-leaderboard/{id}:
+    get:
+      tags:
+        - Scoring
+      summary: Get hackathon leaderboard
+      description: Get ranked projects for a hackathon based on scores
+      operationId: getHackathonLeaderboard
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Ranked projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  leaderboard:
+                    type: array
               example:
                 message: "successful"
                 projects:
@@ -1101,17 +1225,19 @@ security: []
 tags:
   - name: Health
     description: Service health checks
+  - name: Hackathons
+    description: Hackathon management
+  - name: Projects
+    description: Project submission and management
+  - name: Scoring
+    description: Project scoring and leaderboard
   - name: Market Agent
     description: Market research and analysis
   - name: Code Agent
     description: Code review and analysis
   - name: Chat Agent
     description: AI judge conversations
-  - name: Hackathons
-    description: Hackathon configuration
-  - name: Projects
-    description: Project management
-  - name: Review
-    description: Project review workflow
   - name: Search
     description: Project discovery
+  - name: Review
+    description: Project review workflow
