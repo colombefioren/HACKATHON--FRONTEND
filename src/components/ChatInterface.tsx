@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "@/lib/hooks/useChat";
+import { PollingLoader } from "./PollingLoader";
 
 interface ChatInterfaceProps {
   projectId?: string;
@@ -47,7 +48,7 @@ export function ChatInterface({ projectId, title = "Ask the AI judge" }: ChatInt
               </Bubble>
             ) : (
               <Bubble side="left" color="var(--brand-mint)">
-                <span className="text-muted-foreground italic">Thinking…</span>
+                <PollingLoader label="Thinking…"/>
               </Bubble>
             )}
           </div>

@@ -64,7 +64,7 @@ export default function ProjectDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen">
         <Topbar />
         <div className="p-4 sm:p-8 max-w-3xl mx-auto">
           <PollingLoader label="Loading project…" />
@@ -89,7 +89,7 @@ export default function ProjectDetailPage() {
   const score = extractScore(project);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Topbar />
       <main className="px-4 sm:px-7 py-6 max-w-6xl mx-auto">
 

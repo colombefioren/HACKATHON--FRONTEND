@@ -15,6 +15,7 @@ export interface ChatTurn {
 export interface Project {
   _id?: string;
   project_id: string;
+  hackathon_id?: number | string;
   short_description: string;
   long_description?: string;
   github_link: string;
