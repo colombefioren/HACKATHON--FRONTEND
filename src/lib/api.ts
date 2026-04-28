@@ -3,7 +3,6 @@ import { API_BASE_URL } from "./constants";
 // ============= Types =============
 
 export interface QAItem {
-  name: ReactNode;
   question: string;
   answer: string;
 }
@@ -31,6 +30,7 @@ export interface CreateProjectInput {
   shortDescription: string;
   longDescription?: string;
   githubLink: string;
+  demoLink?: string;
   hackathonId?: number | string;
 }
 

@@ -32,6 +32,7 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
   const [shortDescription, setShort] = useState("");
   const [longDescription, setLong] = useState("");
   const [githubLink, setGithub] = useState("");
+  const [demoLink, setDemo] = useState("");
   const [touched, setTouched] = useState({ short: false, github: false });
 
   const createMut = useMutation({
@@ -42,6 +43,7 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
       setShort("");
       setLong("");
       setGithub("");
+      setDemo("");
       setTouched({ short: false, github: false });
       onClose();
     },
@@ -90,7 +92,7 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
               }
               return;
             }
-            createMut.mutate({ shortDescription, longDescription, githubLink, hackathonId });
+            createMut.mutate({ shortDescription, longDescription, githubLink, demoLink: demoLink || undefined, hackathonId });
           }}
           className="space-y-4"
         >
@@ -122,8 +124,8 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
             />
           </Field>
           
-          <Field 
-            label="GitHub URL *" 
+          <Field
+            label="GitHub URL *"
             error={githubError ? "Must be a valid GitHub repo URL (e.g., github.com/user/repo)" : undefined}
           >
             <input
@@ -132,10 +134,20 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
               onBlur={() => setTouched(t => ({ ...t, github: true }))}
               placeholder="https://github.com/user/repo"
               className="w-full text-sm px-3 py-2 rounded-[3px] outline-none bg-white"
-              style={{ 
-                border: githubError ? "2.5px solid var(--destructive)" : "2.5px solid var(--brand-ink)", 
-                boxShadow: githubError ? "3px 3px 0 var(--destructive)" : "3px 3px 0 var(--brand-ink)" 
+              style={{
+                border: githubError ? "2.5px solid var(--destructive)" : "2.5px solid var(--brand-ink)",
+                boxShadow: githubError ? "3px 3px 0 var(--destructive)" : "3px 3px 0 var(--brand-ink)"
               }}
+            />
+          </Field>
+
+          <Field label="Demo link">
+            <input
+              value={demoLink}
+              onChange={(e) => setDemo(e.target.value)}
+              placeholder="https://myapp.demo.com (optional)"
+              className="w-full text-sm px-3 py-2 rounded-[3px] outline-none bg-white"
+              style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
             />
           </Field>
 
