@@ -163,7 +163,7 @@ export default function SearchPage() {
             icon={SearchX}
             title={`No results for "${query}"`}
             description="Try different keywords, a broader concept, or browse all submissions from the dashboard."
-            action={{ label: "← Back to dashboard", onClick: () => window.location.href = "/" }}
+            action={{ label: "← Back to dashboard", onClick: () => window.location.href = "/dashboard" }}
           />
         )}
 

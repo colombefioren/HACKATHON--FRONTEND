@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const navItems = [
-  { href: "/", label: "Dashboard" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/search", label: "Search" },
 ] as const;
 
@@ -21,7 +21,7 @@ export function Topbar({ submissionsOpen }: TopbarProps) {
     <header className="bg-brand-ink" style={{ borderBottom: "2.5px solid var(--brand-mustard)" }}>
       <div className="h-14 px-4 sm:px-7 flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+        <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0">
           <img
             src="/evalio.svg"
             alt="Evalio"
@@ -50,8 +50,7 @@ export function Topbar({ submissionsOpen }: TopbarProps) {
             </span>
           )}
           {navItems.map((item) => {
-            const isActive =
-              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const isActive = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -100,8 +99,7 @@ export function Topbar({ submissionsOpen }: TopbarProps) {
             </span>
           )}
           {navItems.map((item) => {
-            const isActive =
-              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const isActive = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
