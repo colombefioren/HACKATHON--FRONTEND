@@ -8,8 +8,19 @@ import { useHackathons } from "@/lib/hooks/useHackathons";
 import { EmptyState } from "@/components/EmptyState";
 import { Trophy } from "lucide-react";
 import { hackathonId } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function DashboardPage() {
+
+
+        const router = useRouter();
+      
+      const user = useUserStore(state=>state.user);
+      
+      if(!user){
+        router.push("/auth");
+      }
   const { data: hackathons = [], isLoading, error, refetch } = useHackathons();
   const [modalOpen, setModalOpen] = useState(false);
 

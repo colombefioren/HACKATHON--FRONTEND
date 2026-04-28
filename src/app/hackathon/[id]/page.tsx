@@ -10,11 +10,20 @@ import { useHackathon, useHackathonProjects } from "@/lib/hooks/useHackathons";
 import { projectStatus } from "@/lib/api";
 import type { ProjectStatus } from "@/lib/constants";
 import { EmptyState } from "@/components/EmptyState";
+import { useRouter } from "next/navigation";
 import { Inbox } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 type SortKey = "latest" | "status";
 
 export default function HackathonPage() {
+  const router = useRouter();
+
+const user = useUserStore(state=>state.user);
+
+if(!user){
+  router.push("/auth");
+}
   const params = useParams();
   const id = params?.id as string;
 

@@ -15,8 +15,17 @@ import { api, projectStatus } from "@/lib/api";
 import { toast } from "sonner";
 import { AgentPollingStatus } from "@/components/AgentPollingStatus";
 import { extractScore } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
 
 function ScoreBar({ score }: { score: number }) {
+    const router = useRouter();
+  
+  const user = useUserStore(state=>state.user);
+  
+  if(!user){
+    router.push("/auth");
+  }
   const color =
     score >= 7.5 ? "var(--brand-mint)" : score >= 5 ? "var(--brand-mustard)" : "var(--brand-coral)";
   return (

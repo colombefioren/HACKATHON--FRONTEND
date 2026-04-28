@@ -5,6 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Topbar } from "@/components/Topbar";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
 
 const STORAGE_KEY = "judgy_hackathon_config";
 
@@ -25,6 +27,14 @@ function loadConfig(): SavedConfig | null {
 }
 
 export default function SetupPage() {
+
+      const router = useRouter();
+    
+    const user = useUserStore(state=>state.user);
+    
+    if(!user){
+      router.push("/auth");
+    }
   const [techTags, setTechTags] = useState<string[]>(["Python", "JavaScript", "React", "Node.js", "AI/ML"]);
   const [themeTags, setThemeTags] = useState<string[]>(["Healthcare", "Education", "Environment", "Finance", "Social Good"]);
   const [techInput, setTechInput] = useState("");

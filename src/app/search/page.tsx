@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { Topbar } from "@/components/Topbar";
 import { ProjectCard } from "@/components/ProjectCard";
 import { useSearch } from "@/lib/hooks/useSearch";
-import Link from "next/link";
 import { EmptyState } from "@/components/EmptyState";
 import { SearchX } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
 
 const HISTORY_KEY = "evalio_search_history";
 const MAX_HISTORY = 6;
@@ -35,6 +36,14 @@ function saveHistory(q: string) {
 }
 
 export default function SearchPage() {
+
+    const router = useRouter();
+  
+  const user = useUserStore(state=>state.user);
+  
+  if(!user){
+    router.push("/auth");
+  }
   const { results, query, loading, error, run } = useSearch();
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
