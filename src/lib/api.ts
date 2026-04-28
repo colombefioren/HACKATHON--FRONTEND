@@ -33,9 +33,28 @@ export interface CreateProjectInput {
 }
 
 export interface CreateHackathonInput {
-  technologies: string;
-  theme: string;
+  name: string;
+  description?: string;
+  technologies?: string;
+  theme?: string;
+  criteria?: string;
+  deadline?: string;
   isAllowed: boolean;
+}
+
+export interface Hackathon {
+  id?: number;
+  hackathon_id?: number;
+  _id?: string | number;
+  name?: string;
+  description?: string;
+  theme?: string;
+  technologies?: string;
+  criteria?: string;
+  isAllowed?: boolean;
+  is_allowed?: boolean;
+  deadline?: string;
+  created_at?: string;
 }
 
 export interface ChatInput {
@@ -101,10 +120,25 @@ export const api = {
 
   // Hackathon setup
   createHackathon: (input: CreateHackathonInput) =>
-    http<{ message: string }>("/create-hackathon", {
+    http<{ message: string; hackathon_id: number }>("/create-hackathon", {
       method: "POST",
       body: JSON.stringify(input),
     }),
+
+  getAllHackathons: () =>
+    http<{ hackathons: Hackathon[] }>("/get-all-hackathons"),
+
+  getHackathon: (id: number | string) =>
+    http<{ hackathon: Hackathon }>(`/get-hackathon/${id}`),
+
+  getHackathonProjects: (id: number | string) =>
+    http<{ projects: Project[] }>(`/get-hackathon-projects/${id}`),
+
+  getProjectScore: (project_id: string) =>
+    http<{ total_score: number; scores: Record<string, number> }>(`/get-project-score/${project_id}`),
+
+  getHackathonLeaderboard: (id: number | string) =>
+    http<{ leaderboard: Array<{ project: Project; total_score: number }> }>(`/get-hackathon-leaderboard/${id}`),
 
   // Chat
   chat: (input: ChatInput) =>
@@ -147,4 +181,9 @@ export function projectStatus(p: Project): "analyzed" | "pending" | "flagged" {
   if (hasMarket && hasCode) return "analyzed";
   if (p.is_reviewed === false && (hasMarket || hasCode)) return "flagged";
   return "pending";
+}
+
+/** Extract a reliable numeric/string ID from a Hackathon object regardless of field name */
+export function hackathonId(h: Hackathon): string | number | undefined {
+  return h.id ?? h.hackathon_id ?? (h._id as number | string | undefined);
 }
