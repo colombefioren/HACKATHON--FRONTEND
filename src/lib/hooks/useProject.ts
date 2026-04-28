@@ -9,8 +9,9 @@ export function useProject(projectId: string | undefined) {
     enabled: !!projectId,
     refetchInterval: (query) => {
       const data = query.state.data;
-      if (!data) return POLLING_INTERVAL_MS;
-      return projectStatus(data) === "analyzed" ? false : POLLING_INTERVAL_MS;
+      // Only poll while agents are still working
+      if (!data || projectStatus(data) === "pending") return POLLING_INTERVAL_MS;
+      return false;
     },
   });
 }
