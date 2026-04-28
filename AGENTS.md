@@ -26,18 +26,22 @@ npm run lint   # ESLint
 
 ```
 src/app/           # Next.js App Router pages
-  ├── page.tsx              # Dashboard (project list)
-  ├── project/[id]/page.tsx # Project detail
+  ├── page.tsx              # Dashboard (list hackathons)
+  ├── hackathon/[id]/page.tsx # Hackathon detail (list projects)
+  ├── project/[id]/page.tsx  # Project detail
   ├── search/page.tsx       # Semantic search
-  ├── setup/page.tsx        # Create hackathon
+  ├── setup/page.tsx         # Create hackathon
 src/lib/
   ├── api.ts               # API client + types
   ├── constants.ts         # Config (API base URL, colors)
-  └── hooks/              # TanStack Query hooks (useProjects, useProject, etc.)
+  ├── utils.ts             # Utilities (extractScore, cn)
+  └── hooks/              # TanStack Query hooks
 src/components/
   ├── ui/                  # Radix UI primitives
   ├── ProjectCard.tsx      # Project display
+  ├── HackathonCard.tsx    # Hackathon display
   ├── Topbar.tsx           # Navigation
+  ├── CreateHackathonModal.tsx # Create hackathon modal
   └── PageTransition.tsx   # Route animations
 ```
 
@@ -54,7 +58,7 @@ src/components/
 - `press-brutal` class for button press effect
 - API returns `{ message, projects[] }` shape — destructure appropriately
 - Project status: `projectStatus(p)` returns `"analyzed" | "pending" | "flagged"`
-- Score extraction: looks for `/10` pattern in AI Q&A responses
+- Score extraction: looks for `/10` pattern in AI Q&A responses (in `src/lib/utils.ts`)
 
 ## Brand
 
@@ -69,14 +73,14 @@ src/components/
 
 ## Hackathon → Projects Architecture (NEW)
 
-The API has hackathon and project entities. Current frontend shows only projects. Migration in progress:
+The API has hackathon and project entities:
 
 ```
-/                     → Liste des hackathons (à implémenter)
-/hackathon/[id]       → Projets d'un hackathon (à créer)
-/project/[id]         → Détail projet (existant)
-/search              → Recherche globale (existant)
-/setup               → Créer hackathon (existant)
+/                     → Liste des hackathons
+/hackathon/[id]       → Projets d'un hackathon
+/project/[id]         → Détail projet
+/search              → Recherche globale
+/setup               → Créer hackathon (via modal)
 ```
 
 ### API Endpoints (from spec.yaml)
@@ -90,7 +94,7 @@ The API has hackathon and project entities. Current frontend shows only projects
 | `POST /create-project` | Soumettre un projet |
 | `POST /review` | Approuver/rejeter un projet |
 
-### Types à ajouter (src/lib/api.ts)
+### Hackathon Type (src/lib/api.ts)
 
 ```typescript
 interface Hackathon {
@@ -107,14 +111,7 @@ interface Hackathon {
 
 ### Score extraction
 
-Currently extracts `/10` from AI Q&A responses. Example:
+Extracts `/10` from AI Q&A responses. Now in `src/lib/utils.ts`:
 ```typescript
-function extractScore(project: Project): number | null {
-  const items = project.market_agent_analysis ?? [];
-  for (const item of items) {
-    const match = item.answer?.match(/\b([0-9](?:\.[0-9])?|10)\s*\/\s*10\b/);
-    if (match) return parseFloat(match[1]);
-  }
-  return null;
-}
+import { extractScore } from "@/lib/utils";
 ```
