@@ -13,6 +13,8 @@ import { useProjects } from "@/lib/hooks/useProjects";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, projectStatus } from "@/lib/api";
 import { toast } from "sonner";
+import { AgentPollingStatus } from "@/components/AgentPollingStatus";
+import { extractScore } from "@/lib/utils";
 
 function ScoreBar({ score }: { score: number }) {
   const color =
@@ -36,16 +38,6 @@ function ScoreBar({ score }: { score: number }) {
       </span>
     </div>
   );
-}
-
-function extractScore(project: ReturnType<typeof useProject>["data"]): number | null {
-  if (!project) return null;
-  const items = project.market_agent_analysis ?? [];
-  for (const item of items) {
-    const match = item.answer?.match(/\b([0-9](?:\.[0-9])?|10)\s*\/\s*10\b/);
-    if (match) return parseFloat(match[1]);
-  }
-  return null;
 }
 
 export default function ProjectDetailPage() {
@@ -201,9 +193,7 @@ export default function ProjectDetailPage() {
           </div>
 
           {status === "pending" && (
-            <div className="mt-4">
-              <PollingLoader label="Agents working… auto-refreshing every 5s" />
-            </div>
+            <AgentPollingStatus />
           )}
         </div>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ACCENT_COLORS } from "@/lib/constants";
 import { type Project, projectStatus } from "@/lib/api";
+import { extractScore } from "@/lib/utils";
 import { StatusBadge } from "./StatusBadge";
 import { ThemeBadge } from "./ThemeBadge";
 
@@ -10,16 +11,6 @@ interface ProjectCardProps {
   project: Project;
   index: number;
   score?: number; // similarity score from search
-}
-
-/** Extract a rough numeric score from QA analysis if available */
-function extractScore(project: Project): number | null {
-  const items = project.market_agent_analysis ?? [];
-  for (const item of items) {
-    const match = item.answer?.match(/\b([0-9](?:\.[0-9])?|10)\s*\/\s*10\b/);
-    if (match) return parseFloat(match[1]);
-  }
-  return null;
 }
 
 function ScorePill({ score }: { score: number }) {

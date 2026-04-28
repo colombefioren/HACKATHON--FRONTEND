@@ -5,8 +5,10 @@ import { Topbar } from "@/components/Topbar";
 import { ProjectCard } from "@/components/ProjectCard";
 import { useSearch } from "@/lib/hooks/useSearch";
 import Link from "next/link";
+import { EmptyState } from "@/components/EmptyState";
+import { SearchX } from "lucide-react";
 
-const HISTORY_KEY = "judgy_search_history";
+const HISTORY_KEY = "evalio_search_history";
 const MAX_HISTORY = 6;
 
 const SUGGESTIONS = [
@@ -157,28 +159,24 @@ export default function SearchPage() {
         )}
 
         {query && !loading && results.length === 0 && (
-          <div
-            className="bg-card p-6 rounded-[4px] text-center"
-            style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "4px 4px 0 var(--brand-ink)" }}
-          >
-            <p className="text-sm font-medium mb-1">No matches for &quot;{query}&quot;</p>
-            <p className="text-xs text-muted-foreground mb-4">Try different keywords or browse all submissions.</p>
-            <Link
-              href="/"
-              className="text-xs font-medium px-4 py-2 rounded-[3px] press-brutal inline-block"
-              style={{
-                background: "#F4D738",
-                border: "2px solid var(--brand-ink)",
-                boxShadow: "3px 3px 0 var(--brand-ink)",
-                color: "#111",
-              }}
-            >
-              Browse all submissions
-            </Link>
+          <EmptyState
+            icon={SearchX}
+            title={`No results for "${query}"`}
+            description="Try different keywords, a broader concept, or browse all submissions from the dashboard."
+            action={{ label: "← Back to dashboard", onClick: () => window.location.href = "/" }}
+          />
+        )}
+
+        {/* Search skeletons while loading */}
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <SearchCardSkeleton key={i} />
+            ))}
           </div>
         )}
 
-        {results.length > 0 && (
+        {results.length > 0 && !loading && (
           <>
             <div className="flex items-center justify-between mb-4">
               <span
@@ -201,6 +199,37 @@ export default function SearchPage() {
           </>
         )}
       </main>
+    </div>
+  );
+}
+
+function SearchCardSkeleton() {
+  return (
+    <div
+      className="bg-card rounded-lg overflow-hidden"
+      style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "5px 5px 0 var(--brand-ink)" }}
+    >
+      <div className="h-1.5 bg-neutral-200 animate-pulse" />
+      <div className="p-4 space-y-3">
+        <div className="flex justify-between gap-2">
+          <div className="h-4 bg-neutral-200 rounded animate-pulse flex-1" />
+          <div className="h-4 w-12 bg-neutral-100 rounded animate-pulse" />
+        </div>
+        <div className="h-3 bg-neutral-100 rounded animate-pulse w-full" />
+        <div className="h-3 bg-neutral-100 rounded animate-pulse w-4/6" />
+        <div className="flex gap-1.5 pt-1">
+          <div className="h-4 w-14 bg-neutral-200 rounded animate-pulse" />
+          <div className="h-4 w-14 bg-neutral-200 rounded animate-pulse" />
+        </div>
+        <div className="h-px bg-neutral-200 animate-pulse" />
+        <div className="flex justify-between">
+          <div className="flex gap-1.5">
+            <div className="h-5 w-16 bg-neutral-200 rounded animate-pulse" />
+            <div className="h-5 w-16 bg-neutral-200 rounded animate-pulse" />
+          </div>
+          <div className="h-5 w-14 bg-neutral-100 rounded animate-pulse" />
+        </div>
+      </div>
     </div>
   );
 }
