@@ -60,7 +60,7 @@ export default function HackathonPage() {
   const isOpen = hackathon?.isAllowed ?? hackathon?.is_allowed ?? false;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Topbar submissionsOpen={isOpen} />
 
       <main className="px-4 sm:px-7 py-6 max-w-7xl mx-auto">
