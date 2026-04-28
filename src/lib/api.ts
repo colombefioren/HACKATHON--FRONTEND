@@ -75,25 +75,44 @@ export interface SearchResult {
 
 // ============= HTTP helper =============
 
-async function http<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers || {}),
-    },
-  });
-  if (!res.ok) {
-    let detail = `${res.status} ${res.statusText}`;
-    try {
-      const body = await res.json();
-      if (body?.detail) detail = body.detail;
-    } catch {
-      // ignore
+const DEFAULT_TIMEOUT_MS = 15_000;
+
+async function http<T>(path: string, init?: RequestInit & { timeout?: number }): Promise<T> {
+  const timeout = init?.timeout ?? DEFAULT_TIMEOUT_MS;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(init?.headers || {}),
+      },
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      let detail = `${res.status} ${res.statusText}`;
+      try {
+        const body = await res.json();
+        if (body?.detail) detail = body.detail;
+      } catch {
+        // ignore
+      }
+      throw new Error(detail);
     }
-    throw new Error(detail);
+
+    const text = await res.text();
+    return text ? JSON.parse(text) as T : ({} as T);
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new Error(`Request timed out after ${timeout}ms`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
   }
-  return res.json() as Promise<T>;
 }
 
 // ============= API surface =============
