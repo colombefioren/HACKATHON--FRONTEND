@@ -187,7 +187,9 @@ export default function HackathonPage() {
               style={{
                 background: "var(--brand-coral)", color: "var(--brand-ink)",
                 border: "2.5px solid var(--brand-ink)", boxShadow: "4px 4px 0 var(--brand-ink)",
-              }}>
+              }}
+              
+              >
               + Add project
             </button>
           </div>
