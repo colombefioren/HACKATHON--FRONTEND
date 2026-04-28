@@ -4,12 +4,48 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AddProjectModalProps {
   open: boolean;
   onClose: () => void;
   hackathonId?: number | string;
 }
+
+const PROJECT_TYPES = [
+  { value: "NEXT_JS", label: "Next.js" },
+  { value: "VUE", label: "Vue" },
+  { value: "NUXT", label: "Nuxt" },
+  { value: "ANGULAR", label: "Angular" },
+  { value: "SVELTE", label: "Svelte" },
+  { value: "SVELTEKIT", label: "SvelteKit" },
+  { value: "ASTRO", label: "Astro" },
+  { value: "REMIX", label: "Remix" },
+  { value: "TAILWIND", label: "Tailwind" },
+  { value: "NODE_EXPRESS", label: "Node Express" },
+  { value: "FASTAPI", label: "FastAPI" },
+  { value: "DJANGO", label: "Django" },
+  { value: "SPRING_BOOT", label: "Spring Boot" },
+  { value: "GIN", label: "Gin" },
+  { value: "RAILS", label: "Rails" },
+  { value: "LARAVEL", label: "Laravel" },
+  { value: "ACTIX", label: "Actix" },
+  { value: "SWIFT_UI", label: "SwiftUI" },
+  { value: "KOTLIN_JETPACK", label: "Kotlin Jetpack" },
+  { value: "REACT_NATIVE", label: "React Native" },
+  { value: "EXPO", label: "Expo" },
+  { value: "FLUTTER", label: "Flutter" },
+  { value: "DOTNET_MAUI", label: ".NET MAUI" },
+  { value: "IONIC", label: "Ionic" },
+  { value: "NATIVESCRIPT", label: "NativeScript" },
+  { value: "OTHER", label: "Other" },
+] as const;
 
 // Validate GitHub URL format
 function isValidGithubUrl(url: string): boolean {
@@ -33,6 +69,7 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
   const [longDescription, setLong] = useState("");
   const [githubLink, setGithub] = useState("");
   const [demoLink, setDemo] = useState("");
+  const [projectType, setProjectType] = useState("OTHER");
   const [touched, setTouched] = useState({ short: false, github: false });
 
   const createMut = useMutation({
@@ -92,7 +129,7 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
               }
               return;
             }
-            createMut.mutate({ shortDescription, longDescription, githubLink, demoLink: demoLink || undefined, hackathonId });
+            createMut.mutate({ shortDescription, longDescription, githubLink, demoLink: demoLink || undefined, hackathonId, projectType });
           }}
           className="space-y-4"
         >
@@ -112,7 +149,25 @@ export function AddProjectModal({ open, onClose, hackathonId }: AddProjectModalP
               }}
             />
           </Field>
-          
+
+          <Field label="Project type *">
+            <Select value={projectType} onValueChange={setProjectType}>
+              <SelectTrigger
+                className="w-full bg-white text-sm"
+                style={{ border: "2.5px solid var(--brand-ink)", boxShadow: "3px 3px 0 var(--brand-ink)" }}
+              >
+                <SelectValue placeholder="Select project type" />
+              </SelectTrigger>
+              <SelectContent>
+                {PROJECT_TYPES.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+           
           <Field label="Long description">
             <textarea
               value={longDescription}
