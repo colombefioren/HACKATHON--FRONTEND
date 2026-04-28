@@ -32,6 +32,7 @@ export interface CreateProjectInput {
   longDescription?: string;
   githubLink: string;
   hackathonId?: number | string;
+  projectType?: string;
 }
 
 export interface CreateHackathonInput {
