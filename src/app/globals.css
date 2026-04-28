@@ -108,7 +108,7 @@
   --brand-yellow: oklch(0.87 0.17 90);     /* #F5C800 page bg */
   --brand-mustard: oklch(0.65 0.16 65);    /* #E3A018 */
   --brand-coral: oklch(0.72 0.18 25);      /* #FF6B6B */
---brand-mint:  #149914;
+  --brand-mint: oklch(0.73 0.13 155);    
 --brand-purple:#990092;
   --brand-sky: oklch(0.80 0.10 215);       /* #69D2E7 */
   --brand-pink: oklch(0.78 0.16 350);      /* #FF69B4 */
